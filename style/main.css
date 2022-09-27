@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: black;
+}
+
+.logo {
+  position: absolute;
+  height: min-content;
+  top: 1;
+  left: 1;
+}
+
+.logo > svg {
+  fill: white
+}

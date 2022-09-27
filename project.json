@@ -1,0 +1,76 @@
+{
+	"contentrating" : "Everyone",
+	"description" : "I wonder if its ever gonna hit the corner...",
+	"file" : "index.html",
+	"general" : 
+	{
+		"properties" : 
+		{
+			"backgroundcolor" : 
+			{
+				"index" : 0,
+				"order" : 100,
+				"text" : "Background Color",
+				"type" : "color",
+				"value" : "0 0 0"
+			},
+			"logocolor" : 
+			{
+				"index" : 1,
+				"order" : 101,
+				"text" : "Logo Color",
+				"type" : "color",
+				"value" : "1 1 1"
+			},
+			"logoscale" : 
+			{
+				"fraction" : true,
+				"index" : 4,
+				"max" : 10,
+				"min" : 0.1,
+				"order" : 104,
+				"precision" : 2,
+				"step" : 0.1,
+				"text" : "Logo Scale",
+				"type" : "slider",
+				"value" : 1
+			},
+			"schemecolor" : 
+			{
+				"order" : 0,
+				"text" : "ui_browse_properties_scheme_color",
+				"type" : "color",
+				"value" : "0 0 0"
+			},
+			"speedx" : 
+			{
+				"fraction" : false,
+				"index" : 2,
+				"max" : 999,
+				"min" : 0,
+				"order" : 102,
+				"text" : "Speed X",
+				"type" : "slider",
+				"value" : 200
+			},
+			"speedy" : 
+			{
+				"fraction" : false,
+				"index" : 3,
+				"max" : 999,
+				"min" : 0,
+				"order" : 103,
+				"text" : "Speed Y",
+				"type" : "slider",
+				"value" : 200
+			}
+		}
+	},
+	"preview" : "preview.jpg",
+	"tags" : [ "Television" ],
+	"title" : "Bouncing DVD Logo",
+	"type" : "web",
+	"version" : 1,
+	"workshopid" : "2868547813",
+	"workshopurl" : "steam://url/CommunityFilePage/2868547813"
+}
