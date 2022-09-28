@@ -1,9 +1,48 @@
+// @ts-check
+
+/**
+ * Collision definition
+ * @typedef {Object} Collision
+ * @property {boolean} top
+ * @property {boolean} bottom
+ * @property {boolean} left
+ * @property {boolean} right
+ */ 
+
+ /**
+ * Speed definition
+ * @typedef {Object} Speed
+ * @property {number} x
+ * @property {number} y
+ */
+
+ /** 
+ * Dimensions definition
+ * @typedef {Object} Dimensions
+ * @property {number} height
+ * @property {number} width
+ */
+
+ /**
+ * Settings definition
+ * @typedef {Object} Settings
+ * @property {Speed} speed
+ * @property {Dimensions} element
+ * @property {Dimensions} area
+ * @property {number} fps_limit
+ * @property {Boolean} paused
+ */
+
+/** 
+ * Settings object with default values
+ * @type {Settings}
+ */
 const settings = {
   speed: {
     x: 100,
     y: 100,
   },
-  logo: {
+  element: {
     height: 90,
     width: 180
   },
@@ -12,37 +51,64 @@ const settings = {
     width: window.innerWidth,
   },
   fps_limit: 1000,
+  paused: false
 }
 
-let PAUSED = false
-let cornerHitCount = 0
+/** 
+ * Used to calculate the time taken to render a frame
+ * @type {number}
+ */
+let then
 
-let logo = document.querySelector(".logo")
-logo.style.height = settings.logo.height
-logo.style.width = settings.logo.width
+/** 
+ * Number of times the element hit a corner
+ * @type {number}
+ */
+let cornerHitCount
 
-let area = document.querySelector(".area")
-area.style.width = settings.area.width
-area.style.height = settings.area.height
+/**
+ * Element bouncing inside the area
+ * @type {HTMLElement | null}
+ */
+let element
 
-function move(target, area, timeElapsed)
+/**
+ * Area in which the element is bouncing
+ * @type {HTMLElement | null}
+ */
+let area
+
+/**
+ * Move an element inside of an area at the speed given in the
+ * settings object and in the given lapse of time
+ * 
+ * @param {HTMLElement} element - The element to move
+ * @param {DOMRect} area - The area in which to move the element
+ * @param {number} timeElapsed - The lapse of time
+ */
+function move(element, area, timeElapsed)
 {
-  const collision = checkCollision(target.getBoundingClientRect(), area.getBoundingClientRect())
+  const collision = checkCollision(element.getBoundingClientRect(), area)
   if (Object.values(collision).includes(true))
   {
     logCornerCheck(collision)
-    forceInBounds(target, area)
+    forceInBounds(element, area, collision)
     changeDirection(collision)
   }
-  updatePosition(target, timeElapsed)
+  updatePosition(element, timeElapsed)
 }
 
+/**
+ * Log wether the element hit the side of the area or a corner
+ * 
+ * @param {Collision} collision - The collision object
+ */
 function logCornerCheck(collision)
 {
-  if (Object.values(collision).reduce((acc, val) => acc += val, 0) >= 2)
+  if (Object.values(collision).reduce((acc, val) => acc += val ? 1 : 0, 0) >= 2)
   {
     cornerHitCount += 1
-    console.log(`%c HIT THE CORNER!! The total number of corner hit is ${cornerHitCount}`, 'background: #222; color: #FF0000')
+    console.log(`%c [${new Date().toLocaleString()}] HIT THE CORNER! The total number of corner hit is ${cornerHitCount}`, 'background: #222; color: #BB2222')
   }
   else
   {
@@ -50,68 +116,120 @@ function logCornerCheck(collision)
   }
 }
 
-function checkCollision(target, area)
+/**
+ * Check on all sides if the element is touching or outside of a given area
+ * 
+ * @param {DOMRect} element - The bounding rect of the element
+ * @param {DOMRect} area - The bounding rect of the area
+ * @returns {Collision} The collision object 
+ */
+function checkCollision(element, area)
 {
   return { 
-    top:    target.y <= area.top,
-    bottom: target.y >= area.height - target.height,
-    left:   target.x <= area.left,
-    right:  target.x >= area.width - target.width,
+    top:    element.y <= area.top,
+    bottom: element.y >= area.height - element.height,
+    left:   element.x <= area.left,
+    right:  element.x >= area.width - element.width,
   }
 }
 
+/**
+ * Change the x and y speed in the settings object if
+ * there is a collision
+ * 
+ * @param {Collision} collision - The collision object
+ */
 function changeDirection(collision)
 {
-  settings.speed.y *= collision.top ^ collision.bottom ? -1 : 1
-  settings.speed.x *= collision.left ^ collision.right ? -1 : 1
+  settings.speed.y *= collision.top || collision.bottom ? -1 : 1
+  settings.speed.x *= collision.left || collision.right ? -1 : 1
 }
 
-function updatePosition(target, timeElapsed)
+/**
+ * Update the position of an element at the speed defined in 
+ * the settings object for a given lapse of time
+ * 
+ * @param {HTMLElement} element - The element
+ * @param {number} timeElapsed - The lapse of time
+ */
+function updatePosition(element, timeElapsed)
 {
-  let { x, y } = target.getBoundingClientRect()
+  let { x, y } = element.getBoundingClientRect()
   x += timeElapsed / 1000 * settings.speed.x
   y += timeElapsed / 1000 * settings.speed.y
-  target.style.left = x
-  target.style.top = y
+  element.style.left = x.toString()
+  element.style.top = y.toString()
 }
 
-function forceInBounds(target, area)
+/**
+ * Move an element inside of an area of it is outside of it
+ * 
+ * @param {HTMLElement} element - The element to move
+ * @param {DOMRect} area - The area in which to move the element
+ * @param {Collision} collision - The collision object indicating the out-of-bounds sides
+ */
+function forceInBounds(element, area, collision)
 {
-  const targetBoundingRect = target.getBoundingClientRect()
-  const areaBoundingRect = area.getBoundingClientRect()
-  const collision = checkCollision(targetBoundingRect, areaBoundingRect)
+  const targetBoundingRect = element.getBoundingClientRect()
   if (collision.top) {
-    target.style.top = areaBoundingRect.top + 1
+    element.style.top = (area.top + 1).toString()
   }
   if (collision.bottom) {
-    target.style.top = areaBoundingRect.bottom - targetBoundingRect.height - 1
+    element.style.top = (area.bottom - targetBoundingRect.height - 1).toString()
   }
   if (collision.left) {
-    target.style.left = areaBoundingRect.left + 1
+    element.style.left = (area.left + 1).toString()
   }
   if (collision.right) {
-    target.style.left = areaBoundingRect.right - targetBoundingRect.width - 1
+    element.style.left = (area.right - targetBoundingRect.width - 1).toString()
   }
 }
-
-let then = Date.now()
 
 function draw()
 {
   let now = Date.now()
   let elapsed = now - then
-  if (!PAUSED) {
+  if (!settings.paused && element && area) {
     if (elapsed >= 1000 / settings.fps_limit) {
-      move(logo, area, elapsed)
+      move(element, area.getBoundingClientRect(), elapsed)
       then = now
     }
   }
   window.requestAnimationFrame(draw)
 }
 
-// Entry point
-window.requestAnimationFrame(draw)
+function init()
+{
+  cornerHitCount = 0
+  then = Date.now()
+
+  element = document.querySelector(".logo")
+  if (!element) {
+    throw new ReferenceError('Logo is required but no element with class "logo" was found')
+  }
+  element.style.height = settings.element.height.toString()
+  element.style.width = settings.element.width.toString()
+
+  area = document.querySelector(".area")
+  if (!area) {
+    throw new ReferenceError('Area is required but no element with class "area" was found')
+  }
+  area.style.width = settings.area.width.toString()
+  area.style.height = settings.area.height.toString()
+}
+
+try {
+  init()
+  window.requestAnimationFrame(draw)
+} catch (error) {
+  console.error("Error during initialization", error)
+}
 
 window.addEventListener("resize", () => {
-  location.reload()
+  if (area) {
+    settings.area.width = window.innerWidth
+    settings.area.height = window.innerHeight
+    area.style.width = settings.area.width.toString()
+    area.style.height = settings.area.height.toString()
+  }
 })
