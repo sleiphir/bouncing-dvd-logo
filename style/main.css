@@ -15,3 +15,50 @@ body {
 .logo > svg {
   fill: white
 }
+
+.settings {
+  position: absolute;
+  right: 0;
+}
+
+.settings-window {
+  display: none;
+  z-index: 0;
+}
+
+.settings-window > table {
+  padding: 10px;
+  z-index: 1;
+  background: #30303082;
+  color: white;
+  opacity: 0.75;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.settings-window > table > tbody > tr {
+  padding: 10px 0;
+}
+
+.settings-window > table > tbody > tr > td:nth-child(1) {
+  text-align: right;
+  padding-right: 10px;
+}
+
+.settings-toggle {
+  position: absolute;
+  cursor: pointer;
+  z-index: 1;
+  right: 0;
+  width: 34px;
+  background: #00000075;
+  border: none;
+  border-radius: 8px;
+  margin: 4px;
+  padding: 7px;
+}
+
+.settings-toggle > svg {
+  fill: white;
+}
