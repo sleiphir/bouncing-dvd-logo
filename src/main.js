@@ -189,12 +189,14 @@ function draw()
 {
   let now = Date.now()
   let elapsed = now - then
-  if (!settings.paused && element && area) {
-    if (elapsed >= 1000 / settings.fps_limit) {
-      move(element, area.getBoundingClientRect(), elapsed)
-      then = now
-    }
+  
+  if (settings.paused) {
+    then = now
+  } else if ((settings.fps_limit === 0 || elapsed >= 1000 / settings.fps_limit) && element && area) {
+    move(element, area.getBoundingClientRect(), elapsed)
+    then = now
   }
+  
   window.requestAnimationFrame(draw)
 }
 
