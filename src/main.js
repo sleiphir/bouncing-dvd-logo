@@ -24,10 +24,19 @@
  */
 
  /**
+  * Logo definition
+  * @typedef {Object} Logo
+  * @property {number} scale
+  * @property {Dimensions} dimensions
+  * @property {string} color
+  */
+
+ /**
  * Settings definition
  * @typedef {Object} Settings
+ * @property {string} background
  * @property {Speed} speed
- * @property {Dimensions} element
+ * @property {Logo} logo
  * @property {Dimensions} area
  * @property {number} fps_limit
  * @property {Boolean} paused
@@ -38,13 +47,18 @@
  * @type {Settings}
  */
 const settings = {
+  background: "#000000",
   speed: {
-    x: 100,
-    y: 100,
+    x: 150,
+    y: 120,
   },
-  element: {
-    height: 90,
-    width: 180
+  logo: {
+    scale: 1.0,
+    color: "#FFFFFF",
+    dimensions: {
+      height: 90,
+      width: 180
+    }
   },
   area: {
     height: window.innerHeight,
@@ -108,7 +122,7 @@ function logCornerCheck(collision)
   if (Object.values(collision).reduce((acc, val) => acc += val ? 1 : 0, 0) >= 2)
   {
     cornerHitCount += 1
-    console.log(`%c [${new Date().toLocaleString()}] HIT THE CORNER! The total number of corner hit is ${cornerHitCount}`, 'background: #222; color: #BB2222')
+    console.log(`%c [${new Date().toLocaleString()}] HIT THE CORNER! The total number of corner hit is ${cornerHitCount}`, 'color: #638ce6')
   }
   else
   {
@@ -209,8 +223,8 @@ function init()
   if (!element) {
     throw new ReferenceError('Logo is required but no element with class "logo" was found')
   }
-  element.style.height = settings.element.height.toString()
-  element.style.width = settings.element.width.toString()
+  element.style.height = settings.logo.dimensions.height.toString()
+  element.style.width = settings.logo.dimensions.width.toString()
 
   area = document.querySelector(".area")
   if (!area) {

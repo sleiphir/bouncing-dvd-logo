@@ -17,8 +17,8 @@ window.wallpaperPropertyListener = {
         settings.speed.y = properties.speedy.value;
       }
       if (properties.logoscale) {
-        element.style.height = settings.logo.height * properties.logoscale.value
-        element.style.width = settings.logo.width * properties.logoscale.value
+        element.style.height = settings.logo.dimensions.height * properties.logoscale.value
+        element.style.width = settings.logo.dimensions.width * properties.logoscale.value
       }
   },
   applyGeneralProperties: function(properties) {
