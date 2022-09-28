@@ -50,7 +50,7 @@ const settings = {
     height: window.innerHeight,
     width: window.innerWidth,
   },
-  fps_limit: 1000,
+  fps_limit: 0,
   paused: false
 }
 
